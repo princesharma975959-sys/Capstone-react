@@ -435,3 +435,163 @@ button:hover {
 .logout-btn:hover {
   background: #16a34a;
 }
+.delete-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.delete-btn:hover {
+  background: #dc2626;
+}
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  z-index: 9999;
+  animation: slideUp 0.3s ease;
+  font-size: 14px;
+}
+
+.snackbar.success {
+  background: #16a34a;
+}
+
+.snackbar.error {
+  background: #dc2626;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 50px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+.snackbar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 8px;
+  z-index: 9999;
+  animation: slideUp 0.3s ease;
+}
+
+.snackbar.success { background: #16a34a; }
+.snackbar.error { background: #dc2626; }
+
+@keyframes slideUp {
+  from { transform: translate(-50%, 40px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.pagination {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-btn {
+  background: #3b82f6;
+  color: white;
+  margin-left: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+/* LIGHT MODE */
+body.light {
+  background: #f1f5f9;
+  color: #111;
+}
+
+/* Cards light */
+body.light .card,
+body.light .form-box,
+body.light table {
+  background: #ffffff;
+  color: black;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Theme button */
+.theme-btn {
+  background: #22c55e;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Logout */
+.logout-btn {
+  background: #22c55e;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* LIGHT MODE */
+body.light {
+  background: #f1f5f9;
+  color: #111;
+}
+
+/* Cards light */
+body.light .card,
+body.light .form-box,
+body.light table {
+  background: #ffffff;
+  color: black;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Theme button */
+.theme-btn {
+  background: #22c55e;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Logout */
+.logout-btn {
+  background: #22c55e;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}

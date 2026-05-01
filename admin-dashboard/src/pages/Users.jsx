@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
+import Snackbar from "../components/Snackbar";
 
 export default function Users() {
   const { users, addUser, deleteUser, updateUser } = useAuth();
@@ -7,24 +8,47 @@ export default function Users() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("User");
   const [editIndex, setEditIndex] = useState(null);
+  const [snack, setSnack] = useState(null);
 
-  // ADD
+  const [search, setSearch] = useState("");
+  const [filterRole, setFilterRole] = useState("All");
+
+  // 🔥 SNACK
+  const showSnack = (msg, type) => {
+    setSnack({ msg, type });
+    setTimeout(() => setSnack(null), 2500);
+  };
+
+  // 🔍 SEARCH + FILTER
+  const filteredUsers = users.filter((u) => {
+    return (
+      u.name.toLowerCase().includes(search.toLowerCase()) &&
+      (filterRole === "All" || u.role === filterRole)
+    );
+  });
+
+  // ADD USER
   const handleAdd = () => {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+      showSnack("Enter valid name ⚠️", "error");
+      return;
+    }
 
     addUser({
       name,
       role,
       status: "Active",
-      tasks: 0
+      tasks: 0,
     });
 
+    showSnack("User Added 🎉", "success");
     setName("");
   };
 
-  // 🔥 UPDATE (NO RELOAD)
+  // UPDATE USER
   const handleUpdate = () => {
     updateUser(editIndex, { name, role });
+    showSnack("User Updated ✏️", "success");
 
     setEditIndex(null);
     setName("");
@@ -33,6 +57,20 @@ export default function Users() {
   return (
     <div>
       <h2>Users</h2>
+
+      {/* 🔍 SEARCH + FILTER */}
+      <div className="controls">
+        <input
+          placeholder="Search user..."
+          onChange={(e) => setSearch(e.target.value)}
+        />
+
+        <select onChange={(e) => setFilterRole(e.target.value)}>
+          <option>All</option>
+          <option>User</option>
+          <option>Admin</option>
+        </select>
+      </div>
 
       {/* FORM */}
       <div className="form-box">
@@ -67,22 +105,21 @@ export default function Users() {
         </thead>
 
         <tbody>
-          {users.map((u, i) => (
+          {filteredUsers.map((u, i) => (
             <tr key={i}>
               <td>{u.name}</td>
               <td>{u.role}</td>
-
-              <td>
-                <span className="status active">Active</span>
-              </td>
-
+              <td>{u.status}</td>
               <td>{u.tasks}</td>
 
               <td>
                 {/* DELETE */}
                 <button
                   className="delete-btn"
-                  onClick={() => deleteUser(i)}
+                  onClick={() => {
+                    deleteUser(i);
+                    showSnack("User Deleted ❌", "error");
+                  }}
                 >
                   Delete
                 </button>
@@ -103,6 +140,15 @@ export default function Users() {
           ))}
         </tbody>
       </table>
+
+      {/* SNACKBAR */}
+      {snack && (
+        <Snackbar
+          message={snack.msg}
+          type={snack.type}
+          onClose={() => setSnack(null)}
+        />
+      )}
     </div>
   );
 }

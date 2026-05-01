@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
 import Dashboard from "./pages/Dashboard";
@@ -8,11 +8,13 @@ import Tasks from "./pages/Tasks";
 import Login from "./pages/Login";
 import "./App.css";
 
+// 🔐 Protected Route
 function Protected({ children }) {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" />;
 }
 
+// 🧱 Layout
 function Layout() {
   return (
     <div className="layout">
@@ -29,22 +31,20 @@ function Layout() {
   );
 }
 
+// 🚀 MAIN APP
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/*"
-            element={
-              <Protected>
-                <Layout />
-              </Protected>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/*"
+        element={
+          <Protected>
+            <Layout />
+          </Protected>
+        }
+      />
+    </Routes>
   );
 }

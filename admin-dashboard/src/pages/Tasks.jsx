@@ -1,4 +1,5 @@
 import { useAuth } from "../context/AuthContext";
+import toast from "react-hot-toast";
 
 export default function Tasks() {
   const { user, users, assignTask, removeTask, completeTask, resetTask } = useAuth();
@@ -34,14 +35,45 @@ export default function Tasks() {
               </td>
 
               <td>
-                <button onClick={() => assignTask(i)}>+ Task</button>
-                <button onClick={() => removeTask(i)}>- Task</button>
+                {/* ADD TASK */}
+                <button
+                  onClick={() => {
+                    assignTask(i);
+                    toast("Task Assigned 📌");
+                  }}
+                >
+                  + Task
+                </button>
 
-                <button className="complete-btn" onClick={() => completeTask(i)}>
+                {/* REMOVE TASK */}
+                <button
+                  onClick={() => {
+                    removeTask(i);
+                    toast("Task Removed 🗑️");
+                  }}
+                >
+                  - Task
+                </button>
+
+                {/* COMPLETE */}
+                <button
+                  className="complete-btn"
+                  onClick={() => {
+                    completeTask(i);
+                    toast.success("Task Completed ✅");
+                  }}
+                >
                   Complete
                 </button>
 
-                <button className="reset-btn" onClick={() => resetTask(i)}>
+                {/* RESET */}
+                <button
+                  className="reset-btn"
+                  onClick={() => {
+                    resetTask(i);
+                    toast("Reset Done 🔄");
+                  }}
+                >
                   Reset
                 </button>
               </td>
