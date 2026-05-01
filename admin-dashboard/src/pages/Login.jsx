@@ -58,6 +58,19 @@ export default function Login() {
         />
 
         <button onClick={handleLogin}>Login</button>
+
+        {/* 👇 DEMO LOGIN INFO */}
+        <p
+          style={{
+            marginTop: "15px",
+            fontSize: "13px",
+            color: "#94a3b8",
+          }}
+        >
+          Demo Login → <br />
+          Email: <b>admin@gmail.com</b> <br />
+          Password: <b>1234</b>
+        </p>
       </div>
 
       {/* 🔔 SNACKBAR */}
