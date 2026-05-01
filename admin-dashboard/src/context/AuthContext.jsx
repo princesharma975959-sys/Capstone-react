@@ -7,34 +7,27 @@ export const AuthProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("user"))
   );
 
-  const [users, setUsers] = useState(
-    JSON.parse(localStorage.getItem("users")) || []
-  );
+  const [users, setUsers] = useState([]);
 
-  // LOAD DATA
+  // ✅ LOAD DATA (BEST VERSION)
   useEffect(() => {
     const saved = localStorage.getItem("users");
 
     if (saved) {
-      setUsers(JSON.parse(saved));
+      setUsers(JSON.parse(saved)); // 🔥 existing data load
     } else {
-      fetch("https://jsonplaceholder.typicode.com/users")
-        .then(res => res.json())
-        .then(data => {
-          const formatted = data.slice(0, 5).map(u => ({
-            name: u.name,
-            role: "User",
-            status: "Active",
-            tasks: Math.floor(Math.random() * 5)
-          }));
+      const defaultUsers = [
+        { name: "Priyansh", role: "Admin", status: "Active", tasks: 5 },
+        { name: "Rahul", role: "User", status: "Completed", tasks: 3 },
+        { name: "Amit", role: "User", status: "Active", tasks: 4 }
+      ];
 
-          setUsers(formatted);
-          localStorage.setItem("users", JSON.stringify(formatted));
-        });
+      setUsers(defaultUsers);
+      localStorage.setItem("users", JSON.stringify(defaultUsers));
     }
   }, []);
 
-  // AUTO SAVE
+  // ✅ AUTO SAVE
   useEffect(() => {
     localStorage.setItem("users", JSON.stringify(users));
   }, [users]);
@@ -42,14 +35,16 @@ export const AuthProvider = ({ children }) => {
   // LOGIN
   const login = (email, password) => {
     if (email === "admin@gmail.com" && password === "123") {
-      setUser({ role: "admin" });
-      localStorage.setItem("user", JSON.stringify({ role: "admin" }));
+      const admin = { role: "admin" };
+      setUser(admin);
+      localStorage.setItem("user", JSON.stringify(admin));
       return true;
     }
 
     if (email === "user@gmail.com" && password === "123") {
-      setUser({ role: "user" });
-      localStorage.setItem("user", JSON.stringify({ role: "user" }));
+      const userData = { role: "user" };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
       return true;
     }
 
@@ -80,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // ASSIGN TASK
+  // TASK FUNCTIONS
   const assignTask = (index) => {
     setUsers(prev =>
       prev.map((u, i) =>
@@ -91,7 +86,6 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // REMOVE TASK
   const removeTask = (index) => {
     setUsers(prev =>
       prev.map((u, i) =>
@@ -102,7 +96,6 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // COMPLETE TASK
   const completeTask = (index) => {
     setUsers(prev =>
       prev.map((u, i) =>
@@ -111,7 +104,6 @@ export const AuthProvider = ({ children }) => {
     );
   };
 
-  // RESET TASK
   const resetTask = (index) => {
     setUsers(prev =>
       prev.map((u, i) =>
