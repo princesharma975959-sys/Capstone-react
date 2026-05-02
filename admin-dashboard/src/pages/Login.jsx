@@ -69,7 +69,7 @@ export default function Login() {
         >
           Demo Login → <br />
           Email: <b>admin@gmail.com</b> <br />
-          Password: <b>123</b>
+          Password: <b>1234</b>
         </p>
       </div>
 

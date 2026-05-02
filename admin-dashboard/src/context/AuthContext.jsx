@@ -9,40 +9,39 @@ export const AuthProvider = ({ children }) => {
 
   const [users, setUsers] = useState([]);
 
-  // ✅ LOAD DATA (BEST VERSION)
+  // 🔥 API से USERS LOAD
   useEffect(() => {
-    const saved = localStorage.getItem("users");
+    fetch("https://jsonplaceholder.typicode.com/users")
+      .then(res => res.json())
+      .then(data => {
+        const formattedUsers = data.map(u => ({
+          name: u.name,
+          role: "User",
+          status: "Active",
+          tasks: Math.floor(Math.random() * 5)
+        }));
 
-    if (saved) {
-      setUsers(JSON.parse(saved)); // 🔥 existing data load
-    } else {
-      const defaultUsers = [
-        { name: "Priyansh", role: "Admin", status: "Active", tasks: 5 },
-        { name: "Rahul", role: "User", status: "Completed", tasks: 3 },
-        { name: "Amit", role: "User", status: "Active", tasks: 4 }
-      ];
-
-      setUsers(defaultUsers);
-      localStorage.setItem("users", JSON.stringify(defaultUsers));
-    }
+        setUsers(formattedUsers);
+      })
+      .catch(() => {
+        // fallback (अगर API fail हो जाए)
+        setUsers([
+          { name: "Offline User", role: "User", status: "Active", tasks: 2 }
+        ]);
+      });
   }, []);
 
-  // ✅ AUTO SAVE
-  useEffect(() => {
-    localStorage.setItem("users", JSON.stringify(users));
-  }, [users]);
-
-  // LOGIN
+  // 🔐 LOGIN
   const login = (email, password) => {
-    if (email === "admin@gmail.com" && password === "123") {
-      const admin = { role: "admin" };
+    if (email === "admin@gmail.com" && password === "1234") {
+      const admin = { role: "admin", email };
       setUser(admin);
       localStorage.setItem("user", JSON.stringify(admin));
       return true;
     }
 
-    if (email === "user@gmail.com" && password === "123") {
-      const userData = { role: "user" };
+    if (email === "user@gmail.com" && password === "1234") {
+      const userData = { role: "user", email };
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
       return true;
@@ -56,17 +55,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
-  // ADD USER
+  // ⚠️ NOTE: ये changes temporary होंगे (API fake है)
+
   const addUser = (newUser) => {
     setUsers(prev => [...prev, newUser]);
   };
 
-  // DELETE USER
   const deleteUser = (index) => {
     setUsers(prev => prev.filter((_, i) => i !== index));
   };
 
-  // UPDATE USER
   const updateUser = (index, updatedData) => {
     setUsers(prev =>
       prev.map((u, i) =>
