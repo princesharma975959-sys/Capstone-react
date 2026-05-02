@@ -7,19 +7,18 @@ export default function Users() {
 
   const [name, setName] = useState("");
   const [role, setRole] = useState("User");
-  const [editIndex, setEditIndex] = useState(null);
+  const [editId, setEditId] = useState(null);
   const [snack, setSnack] = useState(null);
 
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("All");
 
-  // 🔥 SNACK
   const showSnack = (msg, type) => {
     setSnack({ msg, type });
     setTimeout(() => setSnack(null), 2500);
   };
 
-  // 🔍 SEARCH + FILTER
+  // 🔍 FILTER
   const filteredUsers = users.filter((u) => {
     return (
       u.name.toLowerCase().includes(search.toLowerCase()) &&
@@ -27,7 +26,7 @@ export default function Users() {
     );
   });
 
-  // ADD USER
+  // ADD
   const handleAdd = () => {
     if (!name.trim()) {
       showSnack("Enter valid name ⚠️", "error");
@@ -45,12 +44,12 @@ export default function Users() {
     setName("");
   };
 
-  // UPDATE USER
+  // UPDATE
   const handleUpdate = () => {
-    updateUser(editIndex, { name, role });
+    updateUser(editId, { name, role });
     showSnack("User Updated ✏️", "success");
 
-    setEditIndex(null);
+    setEditId(null);
     setName("");
   };
 
@@ -58,7 +57,7 @@ export default function Users() {
     <div>
       <h2>Users</h2>
 
-      {/* 🔍 SEARCH + FILTER */}
+      {/* SEARCH */}
       <div className="controls">
         <input
           placeholder="Search user..."
@@ -74,7 +73,7 @@ export default function Users() {
 
       {/* FORM */}
       <div className="form-box">
-        <h3>{editIndex !== null ? "Edit User" : "Add User"}</h3>
+        <h3>{editId !== null ? "Edit User" : "Add User"}</h3>
 
         <input
           placeholder="Enter name"
@@ -87,8 +86,8 @@ export default function Users() {
           <option>Admin</option>
         </select>
 
-        <button onClick={editIndex !== null ? handleUpdate : handleAdd}>
-          {editIndex !== null ? "Update User" : "Add User"}
+        <button onClick={editId !== null ? handleUpdate : handleAdd}>
+          {editId !== null ? "Update User" : "Add User"}
         </button>
       </div>
 
@@ -105,30 +104,28 @@ export default function Users() {
         </thead>
 
         <tbody>
-          {filteredUsers.map((u, i) => (
-            <tr key={i}>
+          {filteredUsers.map((u) => (
+            <tr key={u.id}>
               <td>{u.name}</td>
               <td>{u.role}</td>
               <td>{u.status}</td>
               <td>{u.tasks}</td>
 
               <td>
-                {/* DELETE */}
                 <button
                   className="delete-btn"
                   onClick={() => {
-                    deleteUser(i);
+                    deleteUser(u.id); // ✅ FIX
                     showSnack("User Deleted ❌", "error");
                   }}
                 >
                   Delete
                 </button>
 
-                {/* EDIT */}
                 <button
                   className="edit-btn"
                   onClick={() => {
-                    setEditIndex(i);
+                    setEditId(u.id); // ✅ FIX
                     setName(u.name);
                     setRole(u.role);
                   }}
@@ -141,7 +138,6 @@ export default function Users() {
         </tbody>
       </table>
 
-      {/* SNACKBAR */}
       {snack && (
         <Snackbar
           message={snack.msg}

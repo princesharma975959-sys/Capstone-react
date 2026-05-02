@@ -3,33 +3,61 @@ import { createContext, useContext, useState, useEffect } from "react";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user"))
-  );
+  const savedUser = localStorage.getItem("user");
+  const [user, setUser] = useState(savedUser ? JSON.parse(savedUser) : null);
 
   const [users, setUsers] = useState([]);
 
-  // 🔥 API से USERS LOAD
+  // 🔥 LOAD USERS (API + custom names + localStorage)
   useEffect(() => {
-    fetch("https://jsonplaceholder.typicode.com/users")
-      .then(res => res.json())
-      .then(data => {
-        const formattedUsers = data.map(u => ({
-          name: u.name,
-          role: "User",
-          status: "Active",
-          tasks: Math.floor(Math.random() * 5)
-        }));
+    const saved = localStorage.getItem("users");
 
-        setUsers(formattedUsers);
-      })
-      .catch(() => {
-        // fallback (अगर API fail हो जाए)
-        setUsers([
-          { name: "Offline User", role: "User", status: "Active", tasks: 2 }
-        ]);
-      });
+    if (saved) {
+      setUsers(JSON.parse(saved));
+    } else {
+      fetch("https://jsonplaceholder.typicode.com/users")
+        .then((res) => res.json())
+        .then((data) => {
+          // ✅ CUSTOM NAMES
+          const customNames = [
+            "Priyansh",
+            "Rahul",
+            "Amit",
+            "Karan",
+            "Vansh"
+          ];
+
+          const formatted = data.slice(0, 5).map((u, index) => ({
+            id: u.id,
+            name: customNames[index], // 👈 name change
+            role: index === 0 ? "Admin" : "User",
+            status: "Active",
+            tasks: u.id % 5,
+          }));
+
+          setUsers(formatted);
+          localStorage.setItem("users", JSON.stringify(formatted));
+        })
+        .catch(() => {
+          // fallback
+          const fallback = [
+            {
+              id: 1,
+              name: "Offline User",
+              role: "User",
+              status: "Active",
+              tasks: 2,
+            },
+          ];
+          setUsers(fallback);
+        });
+    }
   }, []);
+
+  // 🔥 AUTO SAVE
+  useEffect(() => {
+    localStorage.setItem("users", JSON.stringify(users));
+  }, [users]);
 
   // 🔐 LOGIN
   const login = (email, password) => {
@@ -55,57 +83,53 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("user");
   };
 
-  // ⚠️ NOTE: ये changes temporary होंगे (API fake है)
-
+  // ✅ CRUD
   const addUser = (newUser) => {
-    setUsers(prev => [...prev, newUser]);
+    const userWithId = { ...newUser, id: Date.now() };
+    setUsers((prev) => [...prev, userWithId]);
   };
 
-  const deleteUser = (index) => {
-    setUsers(prev => prev.filter((_, i) => i !== index));
+  const deleteUser = (id) => {
+    setUsers((prev) => prev.filter((u) => u.id !== id));
   };
 
-  const updateUser = (index, updatedData) => {
-    setUsers(prev =>
-      prev.map((u, i) =>
-        i === index ? { ...u, ...updatedData } : u
-      )
+  const updateUser = (id, updatedData) => {
+    setUsers((prev) =>
+      prev.map((u) => (u.id === id ? { ...u, ...updatedData } : u))
     );
   };
 
   // TASK FUNCTIONS
-  const assignTask = (index) => {
-    setUsers(prev =>
-      prev.map((u, i) =>
-        i === index
-          ? { ...u, tasks: (u.tasks || 0) + 1, status: "Active" }
+  const assignTask = (id) => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === id ? { ...u, tasks: u.tasks + 1, status: "Active" } : u
+      )
+    );
+  };
+
+  const removeTask = (id) => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === id
+          ? { ...u, tasks: Math.max(0, u.tasks - 1) }
           : u
       )
     );
   };
 
-  const removeTask = (index) => {
-    setUsers(prev =>
-      prev.map((u, i) =>
-        i === index
-          ? { ...u, tasks: Math.max(0, (u.tasks || 0) - 1) }
-          : u
+  const completeTask = (id) => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === id ? { ...u, status: "Completed" } : u
       )
     );
   };
 
-  const completeTask = (index) => {
-    setUsers(prev =>
-      prev.map((u, i) =>
-        i === index ? { ...u, status: "Completed" } : u
-      )
-    );
-  };
-
-  const resetTask = (index) => {
-    setUsers(prev =>
-      prev.map((u, i) =>
-        i === index ? { ...u, status: "Active" } : u
+  const resetTask = (id) => {
+    setUsers((prev) =>
+      prev.map((u) =>
+        u.id === id ? { ...u, status: "Active" } : u
       )
     );
   };
@@ -123,7 +147,7 @@ export const AuthProvider = ({ children }) => {
         assignTask,
         removeTask,
         completeTask,
-        resetTask
+        resetTask,
       }}
     >
       {children}
