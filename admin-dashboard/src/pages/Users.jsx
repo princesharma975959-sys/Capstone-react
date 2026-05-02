@@ -18,10 +18,10 @@ export default function Users() {
     setTimeout(() => setSnack(null), 2500);
   };
 
-  // 🔍 FILTER
+  // 🔍 FILTER SAFE VERSION
   const filteredUsers = users.filter((u) => {
     return (
-      u.name.toLowerCase().includes(search.toLowerCase()) &&
+      u.name?.toLowerCase().includes(search.toLowerCase()) &&
       (filterRole === "All" || u.role === filterRole)
     );
   });
@@ -46,11 +46,18 @@ export default function Users() {
 
   // UPDATE
   const handleUpdate = () => {
+    if (!name.trim()) {
+      showSnack("Enter valid name ⚠️", "error");
+      return;
+    }
+
     updateUser(editId, { name, role });
+
     showSnack("User Updated ✏️", "success");
 
     setEditId(null);
     setName("");
+    setRole("User"); // 🔥 IMPORTANT RESET
   };
 
   return (
@@ -115,7 +122,7 @@ export default function Users() {
                 <button
                   className="delete-btn"
                   onClick={() => {
-                    deleteUser(u.id); // ✅ FIX
+                    deleteUser(u.id);
                     showSnack("User Deleted ❌", "error");
                   }}
                 >
@@ -125,7 +132,7 @@ export default function Users() {
                 <button
                   className="edit-btn"
                   onClick={() => {
-                    setEditId(u.id); // ✅ FIX
+                    setEditId(u.id);
                     setName(u.name);
                     setRole(u.role);
                   }}

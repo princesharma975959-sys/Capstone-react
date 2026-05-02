@@ -23,8 +23,8 @@ export default function Tasks() {
         </thead>
 
         <tbody>
-          {users.map((u, i) => (
-            <tr key={i}>
+          {users.map((u) => (
+            <tr key={u.id}>
               <td>{u.name}</td>
               <td>{u.tasks}</td>
 
@@ -38,7 +38,7 @@ export default function Tasks() {
                 {/* ADD TASK */}
                 <button
                   onClick={() => {
-                    assignTask(i);
+                    assignTask(u.id);
                     toast("Task Assigned 📌");
                   }}
                 >
@@ -48,7 +48,7 @@ export default function Tasks() {
                 {/* REMOVE TASK */}
                 <button
                   onClick={() => {
-                    removeTask(i);
+                    removeTask(u.id);
                     toast("Task Removed 🗑️");
                   }}
                 >
@@ -59,7 +59,7 @@ export default function Tasks() {
                 <button
                   className="complete-btn"
                   onClick={() => {
-                    completeTask(i);
+                    completeTask(u.id);
                     toast.success("Task Completed ✅");
                   }}
                 >
@@ -70,7 +70,7 @@ export default function Tasks() {
                 <button
                   className="reset-btn"
                   onClick={() => {
-                    resetTask(i);
+                    resetTask(u.id);
                     toast("Reset Done 🔄");
                   }}
                 >
